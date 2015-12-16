@@ -1,7 +1,7 @@
 package jesustoskno.practicasoap.Soapeando;
 
-import android.util.Log;
 
+import java.nio.charset.Charset;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -15,68 +15,77 @@ import java.util.List;
  * Created by jtoscano on 14/12/2015.
  */
 public class XmlParser {
+    protected String RESULT = "Result";
+    protected String OK = "OK";
+    protected String DATASET_TAG = "DatasetXML";
+    protected Boolean DATASET_STATUS = false;
+    protected static final String UTF8 = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+    protected Boolean MODO=false;
+    private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
-    public List<Video> readXml(String dataset) throws XmlPullParserException, IOException {
-        ArrayList<Video> videosItems = new ArrayList<Video>();
+    public void readXml(String dataset) throws XmlPullParserException, IOException {
+        leerRespuesta(dataset);
+    }
+
+    private void leerRespuesta(String dataset) throws XmlPullParserException, IOException {
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser parser = factory.newPullParser();
         parser.setInput(new StringReader(dataset));
         int eventType = parser.getEventType();
-        String text = "";
-        String id = "";
-        String nombre = "";
+        String tagname = "";
+        Boolean dataSetStatus = false;
+        Boolean okStatus = false;
+        if (MODO.equals(false)) {
+            while (eventType != XmlPullParser.END_DOCUMENT) {
 
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            String tagname = parser.getName();
-            switch (eventType) {
-                case XmlPullParser.START_TAG:
-                    if (tagname.equals("video")) {
-                        Video video = new Video();
-                        id = parser.getAttributeValue(0);
-                        video.setId(id);
-                        nombre = parser.getAttributeValue(1);
-                        video.setNombre(nombre);
-                        videosItems.add(video);
-                    }
-                    break;
-                case XmlPullParser.TEXT:
-                    if(tagname!=null&&tagname.equals("version"))
-                {
-                    Log.d("Version",parser.getText());
+                if (eventType == XmlPullParser.START_TAG && parser.getName().equals(RESULT)) {
+                    tagname = parser.getName();
                 }
-                    break;
-                case XmlPullParser.END_TAG:
-                    break;
-
+                if (eventType == XmlPullParser.TEXT && tagname.equals(RESULT)) {
+                    if (parser.getText().equals(OK)) {
+                        okStatus = true;
+                    }
+                }
+                if (okStatus.equals(true)) {
+                    if (eventType == XmlPullParser.START_TAG && parser.getName().equals(DATASET_TAG)) {
+                        dataSetStatus = true;
+                    }
+                    if (dataSetStatus.equals(true) && eventType == XmlPullParser.TEXT) {
+                        String dataSet= parser.getText();
+                        DATASET_STATUS = true;
+                        MODO = true;
+                        readXml(dataSet);
+                        //leerDataset();
+                    }
+                }
+                eventType = parser.next();
             }
-            eventType = parser.next();
         }
-        for (int i = 0; i < videosItems.size(); i++) {
-            Log.d("Video " + (i+1), "Id: " + videosItems.get(i).getId() + " Nombre: " + videosItems.get(i).getNombre());
-        }
-        return videosItems;
-    }
+        if(MODO.equals(true)){
+            MODO=false;
+            String tag = "";
+            String endTag = "";
+            String prefix = "";
+            String nameSpace = "";
+            eventType=parser.getEventType();
 
-    public class Video {
-        private String id;
-        private String nombre;
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getNombre() {
-            return nombre;
-        }
-
-        public void setNombre(String nombre) {
-            this.nombre = nombre;
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        tag = parser.getName();
+                        prefix = parser.getPrefix();
+                        nameSpace = parser.getNamespace();
+                        break;
+                    case XmlPullParser.TEXT:
+                        break;
+                    case XmlPullParser.END_TAG:
+                        endTag = parser.getName();
+                        break;
+                }
+                eventType = parser.next();
+            }
         }
     }
 }
