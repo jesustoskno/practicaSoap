@@ -57,7 +57,6 @@ public class XmlParser {
                         DATASET_STATUS = true;
                         MODO = true;
                         readXml(dataSet);
-                        //leerDataset();
                     }
                 }
                 eventType = parser.next();
