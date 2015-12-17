@@ -1,15 +1,10 @@
 package jesustoskno.practicasoap.Soapeando;
 
-
-import java.nio.charset.Charset;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
-
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jtoscano on 14/12/2015.
@@ -19,9 +14,7 @@ public class XmlParser {
     protected String OK = "OK";
     protected String DATASET_TAG = "DatasetXML";
     protected Boolean DATASET_STATUS = false;
-    protected static final String UTF8 = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
     protected Boolean MODO=false;
-    private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
     public void readXml(String dataset) throws XmlPullParserException, IOException {
         leerRespuesta(dataset);

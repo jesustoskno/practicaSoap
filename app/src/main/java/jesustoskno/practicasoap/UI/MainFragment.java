@@ -3,26 +3,13 @@ package jesustoskno.practicasoap.UI;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Html;
-import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
 import jesustoskno.practicasoap.R;
 import jesustoskno.practicasoap.Soapeando.XmlParser;
 import jesustoskno.practicasoap.interfaces.IGetTicketTypeList;
@@ -86,7 +73,6 @@ public class MainFragment extends Fragment {
     private void setRestAdapter() {
         restAdapter = new RestAdapter.Builder()
                 .setEndpoint(END_POINT)
-                //.setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
     }
 
